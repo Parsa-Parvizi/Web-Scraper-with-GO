@@ -10,9 +10,11 @@ net/http: This package is used for making HTTP requests to web services.
 encoding/json: This package is used for encoding and decoding JSON data.
 io: This package provides general input/output functionality.
 gopkg.in/cheerio.v1: This package (although not used in this code) is likely intended for parsing HTML documents, but it's not relevant for the current functionality that deals with JSON data.
-Struct Definition:
 
-Coin: This struct defines the structure of a cryptocurrency with the following fields:
+#Struct Definition:
+
+Coin:This struct defines the structure of a cryptocurrency with the following fields:
+
 ID: The unique identifier for the coin (string).
 Symbol: The symbol of the coin (string).
 Name: The name of the coin (string).
@@ -43,7 +45,22 @@ Prints a header message "Cryptocurrency Market Data".
 Loops through each Coin struct in the slice.
 Prints the coin's name, symbol, current price, market cap, 24h high/low, price change (absolute and percentage), circulating supply, total supply, all-time high/low, and last updated timestamp.
 Prints a separator line between each coin entry.
-Error Handling:
 
+#Error Handling:
 The code incorporates error handling for both HTTP requests and JSON decoding. If an error occurs during either step, the program prints an informative message and exits.
 Overall, this code demonstrates how to fetch cryptocurrency market data from the CoinGecko API using Go, parse the JSON response, and display the information in a structured format.
+
+
+# Example Output
+---------------------------------------------------
+Cryptocurrency Market Data:
+Name: Bitcoin (btc)
+Current Price: $93055.00
+Market Cap: $1846576757596.00
+24h High: $96386.00, 24h Low: $92844.00
+Price Change (24h): -$3053.31 (-3.18%)
+Circulating Supply: 19800175.00
+Total Supply: 21000000.00
+All-Time High: $108135.00, All-Time Low: $67.81
+Last Updated: 2024-12-23T18:45:19.236Z
+---------------------------------------------------

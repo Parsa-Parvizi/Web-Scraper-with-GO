@@ -41,7 +41,7 @@ type Coin struct {
     LastUpdated        string  `json:"last_updated"`
 }
 
-## 🚀 Main Function
+🚀 Main Function
 
 The program:
 
@@ -59,7 +59,7 @@ Example Output
 | Bitcoin   | BTC    | $93055.00    | $1.84T        | $96386   | $92844  | -$3053   | -3.18%     | 19800175.00   | 21000000.00 | $108135.00  | 2024-12-23T18:45:19Z    |
 +-----------+--------+--------------+---------------+----------+---------+----------+------------+---------------+-------------+-------------+-------------------------+
 
-## ⚠️ Error Handling
+⚠️ Error Handling
 
 The code gracefully handles:
 
@@ -70,7 +70,7 @@ The code gracefully handles:
     JSON decoding errors.
 
 If any error occurs, a descriptive message is printed and the program exits.
-## 🛠 Requirements
+🛠 Requirements
 
     Go 1.18+
 
@@ -80,7 +80,7 @@ Install dependencies:
 
 go get github.com/olekukonko/tablewriter
 
-## 🧪 Run the Project
+🧪 Run the Project
 
 go run main.go
 

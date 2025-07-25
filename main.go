@@ -1,12 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	_ "github.com/lib/pq"
+	"github.com/olekukonko/tablewriter"
 	"net/http"
 	"os"
-
-	"github.com/olekukonko/tablewriter"
 )
 
 // Coin represents the structure of each cryptocurrency data from the API
@@ -19,6 +20,51 @@ type Coin struct {
 	High24h            float64 `json:"high_24h"`
 	Low24h             float64 `json:"low_24h"`
 	PriceChangePercent float64 `json:"price_change_percentage_24h"`
+}
+
+func SaveCoinsToPostgres(coins []Coin) error {
+	connStr := "host=localhost port=5432 user=coinuser password=coinpassword dbname=coindb sslmode=disable"
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		return fmt.Errorf("failed to connect to database: %v", err)
+	}
+	defer db.Close()
+
+	createTable := `
+	CREATE TABLE IF NOT EXISTS coins (
+		id TEXT PRIMARY KEY,
+		symbol TEXT,
+		name TEXT,
+		current_price REAL,
+		market_cap REAL,
+		high_24h REAL,
+		low_24h REAL,
+		price_change_percent REAL
+	);
+	`
+	_, err = db.Exec(createTable)
+	if err != nil {
+		return fmt.Errorf("failed to create table: %v", err)
+	}
+
+	for _, c := range coins {
+		_, err := db.Exec(`
+			INSERT INTO coins (id, symbol, name, current_price, market_cap, high_24h, low_24h, price_change_percent)
+			VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+			ON CONFLICT (id) DO UPDATE SET
+				current_price = EXCLUDED.current_price,
+				market_cap = EXCLUDED.market_cap,
+				high_24h = EXCLUDED.high_24h,
+				low_24h = EXCLUDED.low_24h,
+				price_change_percent = EXCLUDED.price_change_percent;
+		`, c.ID, c.Symbol, c.Name, c.CurrentPrice, c.MarketCap, c.High24h, c.Low24h, c.PriceChangePercent)
+
+		if err != nil {
+			return fmt.Errorf("failed to insert data: %v", err)
+		}
+	}
+
+	return nil
 }
 
 // FetchCoins sends HTTP request to the API and returns the list of coins or error
@@ -45,8 +91,10 @@ func FetchCoins() ([]Coin, error) {
 
 func main() {
 	coins, err := FetchCoins()
+	err = SaveCoinsToPostgres(coins)
 	if err != nil {
 		fmt.Println("Error:", err)
+		fmt.Println("Database Error:", err)
 		return
 	}
 
